@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+  --primary: #CCFF00;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  /* Har cheez smooth transition karegi */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ✨ Custom Animation: Neon Pulse */
+@keyframes neon-pulse {
+  0% { box-shadow: 0 0 5px rgba(204, 255, 0, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(204, 255, 0, 0.4); }
+  100% { box-shadow: 0 0 5px rgba(204, 255, 0, 0.2); }
+}
+
+.neon-hover:hover {
+  animation: neon-pulse 1.5s infinite;
+}
