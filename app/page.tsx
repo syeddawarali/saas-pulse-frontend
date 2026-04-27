@@ -24,14 +24,20 @@ export default function Dashboard() {
 
   const router = useRouter();
 
+  // API base URL variable
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   const fetchData = async () => {
     const token = localStorage.getItem('token');
     if (!token) return router.push('/login');
     try {
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      const statusRes = await axios.get(`http://localhost:3000/api/usage-status`, config);
+      
+      // ✅ Updated to use Environment Variable
+      const statusRes = await axios.get(`${API_URL}/api/usage-status`, config);
       setUsage(statusRes.data);
-      const historyRes = await axios.get(`http://localhost:3000/api/usage-history`, config);
+      
+      const historyRes = await axios.get(`${API_URL}/api/usage-history`, config);
       setHistory(historyRes.data.map((item: any) => ({
         ...item,
         date: new Date(item.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })
@@ -45,7 +51,8 @@ export default function Dashboard() {
     setIsGenerating(true);
     const token = localStorage.getItem('token');
     try {
-      const res = await axios.post('http://localhost:3000/api/generate-key', {}, {
+      // ✅ Updated to use Environment Variable
+      const res = await axios.post(`${API_URL}/api/generate-key`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setApiKey(res.data.api_key);
@@ -66,7 +73,8 @@ export default function Dashboard() {
     setLoading(true);
     const token = localStorage.getItem('token');
     try {
-      await axios.post('http://localhost:3000/api/add-units', { units_to_add: topupAmount }, {
+      // ✅ Updated to use Environment Variable
+      await axios.post(`${API_URL}/api/add-units`, { units_to_add: topupAmount }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success(`SYSTEM UPDATED: +${topupAmount} UNITS`);
@@ -84,7 +92,8 @@ export default function Dashboard() {
 
     const token = localStorage.getItem('token');
     try {
-      await axios.post('http://localhost:3000/api/track-usage', { action: "Pulse_Sync" }, {
+      // ✅ Updated to use Environment Variable
+      await axios.post(`${API_URL}/api/track-usage`, { action: "Pulse_Sync" }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchData();
@@ -111,7 +120,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-black text-white font-mono">
-      
       <header className="sticky top-0 z-[100] bg-black/80 backdrop-blur-xl border-b-2 border-zinc-900 px-4 lg:px-12 py-8">
         <div className="max-w-7xl mx-auto flex justify-between items-end">
           <div>
@@ -152,7 +160,6 @@ export default function Dashboard() {
       </header>
 
       <main className="max-w-7xl mx-auto p-4 lg:p-12">
-        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           <div className="lg:col-span-2 bg-zinc-900/20 border-2 border-zinc-900 p-12 rounded-[4rem] group relative overflow-hidden">
             <span className="text-[#CCFF00] text-[10px] font-black uppercase tracking-[0.6em] mb-12 block">Consumption</span>
@@ -175,10 +182,10 @@ export default function Dashboard() {
                 onClick={trackUsage} 
                 disabled={isLimitReached}
                 className={`px-12 py-5 rounded-full font-black text-xs uppercase tracking-widest transition-all active:scale-95 
-                    ${isLimitReached 
-                        ? 'bg-zinc-800 text-zinc-600 cursor-not-allowed border border-zinc-700' 
-                        : 'bg-white text-black hover:bg-[#CCFF00]'
-                    }`}
+                  ${isLimitReached 
+                      ? 'bg-zinc-800 text-zinc-600 cursor-not-allowed border border-zinc-700' 
+                      : 'bg-white text-black hover:bg-[#CCFF00]'
+                  }`}
             >
                 {isLimitReached ? "LIMIT EXCEEDED" : "Execute Pulse"}
             </button>

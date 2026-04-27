@@ -11,11 +11,15 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  // ✅ Use Environment Variable for API
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('http://localhost:3000/api/signup', formData);
+      // ✅ Updated: Hardcoded localhost replaced with variable
+      await axios.post(`${API_URL}/api/signup`, formData);
       toast.success("Account created successfully!");
       router.push('/login');
     } catch (err: any) {
